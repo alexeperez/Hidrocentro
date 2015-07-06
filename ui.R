@@ -13,14 +13,14 @@ shinyUI(fixedPage( # standard shiny layout, controls on the
 #--------------------------- fixed row 1 logos---------------------------------#
   fixedRow(
   HTML("<hr color=SteelBlue noshade=noshade />"),
-         column(width=3,offset = 0,
+         column(width=2,offset = 0,
             tags$img(src = "logo_ssl_ult.jpeg", width = "220px", height = "85px",border="1")  
          ),
-         column(width=6,offset = 0,
+         column(width=5,offset = 0,
          HTML("<div align=center> <font color=SteelBlue face=arial size=5> Informe de Ensayos 
               Metrológicos </font> </div>")
          ),
-         column(width=3,offset = 0,
+         column(width=2,offset = 0,
             tags$img(src = "logohidro.png", width = "190px", height = "70px",border="1")  
          )
   ),    
@@ -31,7 +31,7 @@ shinyUI(fixedPage( # standard shiny layout, controls on the
 HTML("<div align=left> <b> <font color=SteelBlue face=Cambria size=3>
      Información del Medidor: </font> </b> </div>"),
   fixedRow(
-  sidebarPanel(width=3,
+  sidebarPanel(width=2,
     #HTML("<font color=SteelBlue face=Arial size=2> Modelo: </font>"),
     textInput(inputId="mod", label = "Modelo",value = "MULTIMAG"),
 
@@ -45,8 +45,8 @@ HTML("<div align=left> <b> <font color=SteelBlue face=Cambria size=3>
     textInput(inputId="clase", label = "Clase",value = "B")
 ),
 
-  column(width=6,offset = 0,  
-    plotOutput(outputId="graf1", width = 500, height = 300),
+  column(width=5,offset = 0,  
+    plotOutput(outputId="graf1", width = 465, height = 270),
     HTML("<font color=SteelBlue face=Arial size=2> Se analiza la diferencia entre los valores 
             del medidor patrón y del medidor del usuario. </a> </font>")
     ),
@@ -67,24 +67,43 @@ HTML("<div align=left> <b> <font color=SteelBlue face=Cambria size=3>
 HTML("<div align=left> <b> <font color=SteelBlue face=Cambria size=3> 
      Caudal (l/h): </font> </b> </div>"),
 fixedRow(
-    sidebarPanel(width = 3,
+    sidebarPanel(width = 2,
         #HTML("<font color=SteelBlue face=Arial size=2> Qmin: </font>"),
-        numericInput(inputId="qmin", label = "Qmin",value = 30),
+        numericInput(inputId="qmin", label = "Qmin:",value = 30),
         #HTML("<font color=SteelBlue face=Arial size=2> Qt: </font>"),
-        numericInput(inputId="qt", label = "Qt",value = 120),
+        numericInput(inputId="qt", label = "Qt:",value = 120),
         #HTML("<font color=SteelBlue face=Arial size=2> Qn: </font>"),
-        numericInput(inputId="qn", label = "Qn",value = 1500),
+        numericInput(inputId="qn", label = "Qn:",value = 1500),
         #HTML("<font color=SteelBlue face=Arial size=2> Qmax: </font>"),
-        numericInput(inputId="qmax", label = "Qmax",value = 3000)
+        numericInput(inputId="qmax", label = "Qmax:",value = 3000)
         ),
     
-column(width=6,offset = 0,
+column(width=5,offset = 0,
        # tabla descriptivos error
-       plotOutput(outputId="graf2", width = 550, height = 130)
+       plotOutput(outputId="graf2", width = 510, height = 120),
+       
+       # medidor aceptable
+       fixedRow(
+           column(width=2, offset = 2,
+              HTML("<img src=medidor.jpg width = 90 height = 80 align=left>")
+              ),
+           column(width=5, offset = 1,
+              tags$h5("Medidor aceptado?", style = "color:red",align="center"),
+              tags$h2(textOutput("medidor"),style = "color:red",align="center")
+              )
+       ),
+       tags$hr(),
+       
+       # Tipo de medicion volumen mayor en medidor patron
+       HTML("<div align=left> <b> <font color=SteelBlue face=Cambria size=3>
+      Volumen en m3: </font> </b> </div>"),
+       
+       radioButtons("vm3", label ="", choices = c("mayor en medidor patrón"="mayor",
+                    "menor en medidor patrón"="menor"), selected="mayor")
        ),
 
 column(width=2,offset = 0,
-       HTML("<b> <font color=SteelBlue face=Cambria size=3> Generar Informe </font> </b>"),
+       HTML("<b> <font color=SteelBlue face=Cambria size=3> Generar Informe: </font> </b>"),
        HTML("<p> <img src=report.png width = 90 height = 80 align=left>
            <font color=SteelBlue face=Cambria size=2> Se genera el reporte automático
             con la información proporcionada. </font> <p>"),
@@ -94,24 +113,24 @@ column(width=2,offset = 0,
 
 
 #------------------------ Datos ensayo medidor patron -------------------------#
-HTML("<b> <font color=SteelBlue face=Cambria size=3> Mediciones Medidor Patrón </font> </b>"),
+HTML("<b> <font color=SteelBlue face=Cambria size=3> Mediciones Medidor Patrón: </font> </b>"),
 fixedRow(
-sidebarPanel(width=3,
+sidebarPanel(width=2,
     #HTML("<font color=SteelBlue face=Arial size=2> Qmin: </font>"),
     numericInput("mpqmini",label ="Qmin",value = 0),
     numericInput("mpqminf",label ="",value = 0)
 ),
-sidebarPanel(width=3,
+sidebarPanel(width=2,
     #HTML("<font color=SteelBlue face=Arial size=2> Qt: </font>"),
     numericInput("mpqti",label ="Qt",value = 0),
     numericInput("mpqtf",label ="",value = 0)
 ),
-sidebarPanel(width=3,
+sidebarPanel(width=2,
     #HTML("<font color=SteelBlue face=Arial size=2> Qn: </font>"),
     numericInput("mpqni",label ="Qn",value = 0),
     numericInput("mpqnf",label ="",value = 0)
 ),
-sidebarPanel(width=3,
+sidebarPanel(width=2,
     #HTML("<font color=SteelBlue face=Arial size=2> Qmax: </font>"),
     numericInput("mpqmaxi",label ="Qmax",value = 0),
     numericInput("mpqmaxf",label ="",value = 0)
@@ -119,24 +138,24 @@ sidebarPanel(width=3,
 ),
 
 # Datos ensayo medidor usuario
-HTML("<b> <font color=SteelBlue face=Cambria size=3> Mediciones Medidor Usuario </font> </b>"),
+HTML("<b> <font color=SteelBlue face=Cambria size=3> Mediciones Medidor Usuario: </font> </b>"),
 fixedRow(
-sidebarPanel(width=3,
+sidebarPanel(width=2,
     #HTML("<font color=SteelBlue face=Arial size=2> Qmin: </font>"),
     numericInput("muqmini",label ="Qmin",value = 0),
     numericInput("muqminf",label ="",value = 0)
 ),
-sidebarPanel(width=3,
+sidebarPanel(width=2,
     #HTML("<font color=SteelBlue face=Arial size=2> Qt: </font>"),
     numericInput("muqti",label ="Qt",value = 0),
     numericInput("muqtf",label ="",value = 0)
 ),
-sidebarPanel(width=3,
+sidebarPanel(width=2,
     #HTML("<font color=SteelBlue face=Arial size=2> Qn: </font>"),
     numericInput("muqni",label ="Qn",value = 0),
     numericInput("muqnf",label ="",value = 0)
 ),
-sidebarPanel(width=3,
+sidebarPanel(width=2,
     #HTML("<font color=SteelBlue face=Arial size=2> Qmax: </font>"),
     numericInput("muqmaxi",label ="Qmax",value = 0),
     numericInput("muqmaxf",label ="",value = 0)

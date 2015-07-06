@@ -11,7 +11,6 @@ library(readxl)
 
 #med <- read.table("clipboard", sep="\t",dec=",",header = F)
 # funcion error de medicion
-med <- mediciones
 error <- function(med, mayor=TRUE){
     dif1 <- med[,2]-med[,1]
     dif2 <- med[,4]-med[,3]
@@ -24,7 +23,7 @@ error <- function(med, mayor=TRUE){
     }
  return(er)
 }
-#error(mediciones)
+error(med)
 
 #------------------------------------------------------
 #             Interfaz
@@ -50,7 +49,9 @@ shinyServer(function(input, output) {
         muli<- c(input$muqmini,input$muqti,input$muqni,input$muqmaxi)
         mulf<- c(input$muqminf,input$muqtf,input$muqnf,input$muqmaxf)
         med <- data.frame(mpli,mplf,muli,mulf)
-        er <- error(med, TRUE)
+        mayor <- FALSE
+        if(input$vm3=="mayor") mayor <- TRUE
+        er <- error(med, mayor)
         
         # Informacion mediciones lectura inicial y final
         mediciones <- data.frame(med,er)
@@ -81,7 +82,10 @@ shinyServer(function(input, output) {
                     size=0.7, linetype="dotted")+
            
            annotate("pointrange", x=d[-3,1], y=er, ymin=er, ymax=er,
-                    colour = "red", size = 1.2)+
+                    colour = "red", size = 1, alpha=0.7)+
+           annotate("segment", x=d[-c(3,5),1], y=er[-4], xend=d[-c(1,3),1], yend=er[-1],
+                        colour = "red", size = 1, alpha=0.7)+
+               
            theme_bw()
     print(g)
             
@@ -96,7 +100,9 @@ shinyServer(function(input, output) {
         muli<- c(input$muqmini,input$muqti,input$muqni,input$muqmaxi)
         mulf<- c(input$muqminf,input$muqtf,input$muqnf,input$muqmaxf)
         med <- data.frame(mpli,mplf,muli,mulf)
-        er <- error(med, TRUE)
+        mayor <- FALSE
+        if(input$vm3=="mayor") mayor <- TRUE
+        er <- error(med, mayor)
         
 
             desc <- data.frame(est=c("Min","Media","Max"), 
@@ -117,6 +123,23 @@ shinyServer(function(input, output) {
                 annotate("text", x=c(0.75,1,1.25), y=rep(0.5,3), label=desc[,2],colour="dodgerblue4",size=4)
             print(g)    
 })
-
+    
+    # Texto medidor aceptado o rechazado
+    output$medidor <- renderText({
+        mpli<- c(input$mpqmini,input$mpqti,input$mpqni,input$mpqmaxi)
+        mplf<- c(input$mpqminf,input$mpqtf,input$mpqnf,input$mpqmaxf)
+        muli<- c(input$muqmini,input$muqti,input$muqni,input$muqmaxi)
+        mulf<- c(input$muqminf,input$muqtf,input$muqnf,input$muqmaxf)
+        med <- data.frame(mpli,mplf,muli,mulf)
+        mayor <- FALSE
+        if(input$vm3=="mayor") mayor <- TRUE
+        er <- error(med, mayor)
+        medidor <- "SI"
+        if(abs(er[1]>5) | any(abs(er[2:length(er)])>2)) medidor <- "NO" 
+        paste(medidor)
+    })
+    
+    
+    
 })
 
