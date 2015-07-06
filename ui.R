@@ -10,6 +10,7 @@ shinyUI(fixedPage( # standard shiny layout, controls on the
   HTML("<body style=background:##FAFAFA> </body>"),
   #tags$hr(),
   
+#--------------------------- fixed row 1 logos---------------------------------#
   fixedRow(
   HTML("<hr color=SteelBlue noshade=noshade />"),
          column(width=3,offset = 0,
@@ -25,13 +26,12 @@ shinyUI(fixedPage( # standard shiny layout, controls on the
   ),    
   HTML("<hr color=SteelBlue noshade=noshade />"),
 
-  
+#--------------------- fixed row 2 grafico comparacion-------------------------#  
 # Informacion medidor
-HTML("<div align=left> <b> <font color=SteelBlue face=Cambria size=4>
+HTML("<div align=left> <b> <font color=SteelBlue face=Cambria size=3>
      Información del Medidor: </font> </b> </div>"),
-
   fixedRow(
-  sidebarPanel(
+  sidebarPanel(width=3,
     #HTML("<font color=SteelBlue face=Arial size=2> Modelo: </font>"),
     textInput(inputId="mod", label = "Modelo",value = "MULTIMAG"),
 
@@ -48,15 +48,26 @@ HTML("<div align=left> <b> <font color=SteelBlue face=Cambria size=4>
   column(width=6,offset = 0,  
     plotOutput(outputId="graf1", width = 500, height = 300),
     HTML("<font color=SteelBlue face=Arial size=2> Se analiza la diferencia entre los valores 
-            del medidor patrón y del medidor del usuario. </a> </font>"),
-    tags$hr()
-    )
-  ),
+            del medidor patrón y del medidor del usuario. </a> </font>")
+    ),
 
-HTML("<div align=left> <b> <font color=SteelBlue face=Cambria size=4> 
+  column(width=2,offset = 0,
+           HTML("<b> <font color=SteelBlue face=Cambria size=3> Análisis </font> </b>"),
+           
+           HTML("<p> <img src=analisis.jpg width = 90 height = 80 align=left>
+           <font color=SteelBlue face=Cambria size=2> Se genera el gráfico del error porcentual
+            entre los valores del medidor patrón y los del medidor del usario.
+           </font> <p>"),
+           submitButton("ANALIZAR")
+                
+     )
+),
+
+#------------------ fixed row 3 tabla descrip comparacion----------------------#
+HTML("<div align=left> <b> <font color=SteelBlue face=Cambria size=3> 
      Caudal (l/h): </font> </b> </div>"),
 fixedRow(
-    sidebarPanel(
+    sidebarPanel(width = 3,
         #HTML("<font color=SteelBlue face=Arial size=2> Qmin: </font>"),
         numericInput(inputId="qmin", label = "Qmin",value = 30),
         #HTML("<font color=SteelBlue face=Arial size=2> Qt: </font>"),
@@ -68,38 +79,39 @@ fixedRow(
         ),
     
 column(width=6,offset = 0,
-       plotOutput(outputId="graf2", width = 550, height = 130),
-       
-       tags$hr(),
-       HTML("<b> <font color=SteelBlue face=Cambria size=4> Generar Informe </font> </b>"),
-       submitButton("GENERAR"),
-       HTML("<font color=SteelBlue face=Arial size=2> Presione GENERAR para la creación 
-       automática del reporte.</font>")
-       
+       # tabla descriptivos error
+       plotOutput(outputId="graf2", width = 550, height = 130)
+       ),
+
+column(width=2,offset = 0,
+       HTML("<b> <font color=SteelBlue face=Cambria size=3> Generar Informe </font> </b>"),
+       HTML("<p> <img src=report.png width = 90 height = 80 align=left>
+           <font color=SteelBlue face=Cambria size=2> Se genera el reporte automático
+            con la información proporcionada. </font> <p>"),
+       submitButton("GENERAR")
        )
 ),
 
 
-
-# Datos ensayo medidor patron
-HTML("<b> <font color=SteelBlue face=Cambria size=4> Mediciones Medidor Patrón </font> </b>"),
+#------------------------ Datos ensayo medidor patron -------------------------#
+HTML("<b> <font color=SteelBlue face=Cambria size=3> Mediciones Medidor Patrón </font> </b>"),
 fixedRow(
-sidebarPanel(
+sidebarPanel(width=3,
     #HTML("<font color=SteelBlue face=Arial size=2> Qmin: </font>"),
     numericInput("mpqmini",label ="Qmin",value = 0),
     numericInput("mpqminf",label ="",value = 0)
 ),
-sidebarPanel(
+sidebarPanel(width=3,
     #HTML("<font color=SteelBlue face=Arial size=2> Qt: </font>"),
     numericInput("mpqti",label ="Qt",value = 0),
     numericInput("mpqtf",label ="",value = 0)
 ),
-sidebarPanel(
+sidebarPanel(width=3,
     #HTML("<font color=SteelBlue face=Arial size=2> Qn: </font>"),
     numericInput("mpqni",label ="Qn",value = 0),
     numericInput("mpqnf",label ="",value = 0)
 ),
-sidebarPanel(
+sidebarPanel(width=3,
     #HTML("<font color=SteelBlue face=Arial size=2> Qmax: </font>"),
     numericInput("mpqmaxi",label ="Qmax",value = 0),
     numericInput("mpqmaxf",label ="",value = 0)
@@ -107,38 +119,33 @@ sidebarPanel(
 ),
 
 # Datos ensayo medidor usuario
-HTML("<b> <font color=SteelBlue face=Cambria size=4> Mediciones Medidor Usuario </font> </b>"),
+HTML("<b> <font color=SteelBlue face=Cambria size=3> Mediciones Medidor Usuario </font> </b>"),
 fixedRow(
-sidebarPanel(
+sidebarPanel(width=3,
     #HTML("<font color=SteelBlue face=Arial size=2> Qmin: </font>"),
     numericInput("muqmini",label ="Qmin",value = 0),
     numericInput("muqminf",label ="",value = 0)
 ),
-sidebarPanel(
+sidebarPanel(width=3,
     #HTML("<font color=SteelBlue face=Arial size=2> Qt: </font>"),
     numericInput("muqti",label ="Qt",value = 0),
     numericInput("muqtf",label ="",value = 0)
 ),
-sidebarPanel(
+sidebarPanel(width=3,
     #HTML("<font color=SteelBlue face=Arial size=2> Qn: </font>"),
     numericInput("muqni",label ="Qn",value = 0),
     numericInput("muqnf",label ="",value = 0)
 ),
-sidebarPanel(
+sidebarPanel(width=3,
     #HTML("<font color=SteelBlue face=Arial size=2> Qmax: </font>"),
     numericInput("muqmaxi",label ="Qmax",value = 0),
     numericInput("muqmaxf",label ="",value = 0)
+)
 ),
-
-submitButton("ANALIZAR")
-),
-
 
 
 tags$hr(),
 mainPanel( # all of the output elements go in here
-fixedRow(
-    column(width=12,offset = 0,
        tabsetPanel(
            tabPanel("Informe de Ensayos Metrológicos",
                 
@@ -172,15 +179,15 @@ fixedRow(
            )
           
              ),
-       HTML("<hr color=SteelBlue noshade=noshade />"),           
-  # Redes sociales
+HTML("<hr color=SteelBlue noshade=noshade />"),           
+  
+# Redes sociales
    HTML("<font color=SteelBlue face=Arial size=1.7> Siguenos en</font>"),
-   HTML("<a href=https://www.facebook.com/sourcestatlab> <img src=facebook.png width = 47 height = 27> </a> 
+   HTML("<a href=https://www.facebook.com/sourcestatlab> <img src=facebook.png width = 50 height = 35> </a> 
         <font color=SteelBlue face=Arial size=1.7>  Source Stat Lab EC </font>"),
-   HTML("<a href=https://twitter.com/SourceStatLab> <img src=twitter.jpg width = 45 height = 25> </a>
+   HTML("<a href=https://twitter.com/SourceStatLab> <img src=twitter.jpg width = 50 height = 45> </a>
         <font color=SteelBlue face=Arial size=1.7> @SourceStatLabEC </font>"),
-   HTML("<hr color=SteelBlue noshade=noshade />")
-   ))
+HTML("<hr color=SteelBlue noshade=noshade />")
   )
  )
 )

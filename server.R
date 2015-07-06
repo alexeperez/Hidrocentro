@@ -9,29 +9,41 @@ library(grid)
 library(reshape2)
 library(readxl)
 
+#med <- read.table("clipboard", sep="\t",dec=",",header = F)
 # funcion error de medicion
+med <- mediciones
 error <- function(med, mayor=TRUE){
-    if(sum(med)!=0){
-        if(mayor==TRUE){ 
-            dvm <- (med[,2]-med[,1])-(med[,4]-med[,3])
-            er <- 100*(dvm/(med[,4]-med[,3]))
-        }else{
-            dvm <- (med[,4]-med[,3])-(med[,2]-med[,1])
-            er <- 100*(dvm/(med[,2]-med[,1]))
-            }
+    dif1 <- med[,2]-med[,1]
+    dif2 <- med[,4]-med[,3]
+    if(mayor==TRUE){
+        dvm <- dif1-dif2
+        er <- ifelse(dif2==0, 0, 100*(dvm/dif2))
     }else{
-        er <- numeric(dim(med)[1])
+        dvm <- dif2-dif1
+        er <- ifelse(dif1==0, 0, 100*(dvm/dif1))
     }
-    return(er)
+ return(er)
 }
+#error(mediciones)
 
 #------------------------------------------------------
 #             Interfaz
 #------------------------------------------------------
-shinyServer(function(input, output) { 
+shinyServer(function(input, output) {
     
     # graf comp consumos 
     output$graf1 <- renderPlot({
+        # Informacion medidor
+        assign("modelo", input$mod, envir=.GlobalEnv)
+        assign("serie", input$serie, envir=.GlobalEnv)
+        assign("diametro", input$diam, envir=.GlobalEnv)
+        assign("clase", input$clase, envir= .GlobalEnv)
+        # Informacion caudales Q
+        assign("qmin", input$qmin, envir= .GlobalEnv)
+        assign("qt", input$qt, envir= .GlobalEnv)
+        assign("qn", input$qn, envir= .GlobalEnv)
+        assign("qmax", input$qmax, envir= .GlobalEnv)
+        save.image()
         
         mpli<- c(input$mpqmini,input$mpqti,input$mpqni,input$mpqmaxi)
         mplf<- c(input$mpqminf,input$mpqtf,input$mpqnf,input$mpqmaxf)
@@ -39,6 +51,11 @@ shinyServer(function(input, output) {
         mulf<- c(input$muqminf,input$muqtf,input$muqnf,input$muqmaxf)
         med <- data.frame(mpli,mplf,muli,mulf)
         er <- error(med, TRUE)
+        
+        # Informacion mediciones lectura inicial y final
+        mediciones <- data.frame(med,er)
+        colnames(mediciones)<- c(colnames(med),"error")
+        assign("mediciones",mediciones,envir=.GlobalEnv)
         
            q0 <- c(input$qmin,input$qt,input$qn,input$qmax)
            # cambio escala
@@ -68,7 +85,7 @@ shinyServer(function(input, output) {
            theme_bw()
     print(g)
             
-save.image()
+
 })
     
     
