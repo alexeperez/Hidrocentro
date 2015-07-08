@@ -1,0 +1,114 @@
+\documentclass[9pt,a4paper,oneside]{article}
+\usepackage{amsmath,amsthm,amsfonts,amssymb}
+\usepackage{pst-eucl,pstricks,pstricks-add}
+\usepackage[utf8]{inputenc}
+%\usepackage[latin1]{inputenc}
+\usepackage[spanish,activeacute]{babel}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{titlesec}
+\usepackage{color}
+\usepackage{url}
+\usepackage{float}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{lmodern}
+\usepackage{setspace}
+%\doublespace % para doble espacio
+\onehalfspace % para espacio y medio
+\newcommand{\code}[1]{\fcolorbox{blue!80}{gray!10}{#1}}
+\parindent=0mm
+
+\begin{document}
+%% Encabezado del documento
+%\fbox{
+\begin{minipage}[d]{40mm}
+\begin{center}
+%\includegraphics[width=4.2cm, height=1.7cm]{hidro.eps}
+\end{center}
+\end{minipage}
+%}
+\begin{minipage}[d]{80mm}
+\begin{center}
+\textsf{\textbf{\small INFORME DE ENSAYO}}\\
+\textsf{\textbf{\small ENSAYO CARACTERÍSTICO}}\\[2mm]
+\textsf{\textbf{\sc \scriptsize I-RAC-403-07-14}}\\
+\end{center}
+\end{minipage}
+%\fbox{
+\begin{minipage}[d]{40mm}
+\begin{center}
+%\includegraphics[width=4.2cm, height=1.7cm]{hidro.eps}
+\end{center}
+\end{minipage}
+%}
+\\
+\vspace{0.6cm}
+
+\begin{tabular}{|p{111pt}|p{334pt}|}\hline
+{\bf FECHA}: & \Sexpr{format(Sys.Date(), "%d/%m/%y")} \\ \hline
+\end{tabular}\newline
+
+{\bf\small DATOS DEL CLIENTE:}\\[2mm]
+\begin{tabular}{|p{111pt}|p{334pt}|}\hline
+{\bf Nombre:} & {\small REPRESENTACIONES HIDROCENTRO CIA. LTDA.}\\ \hline
+{\bf Dirección:} & {\small PASAJE N27A OE5-136 Y MARTIN UTRERAS}\\ \hline
+{\bf Representante:} & {\small ING. PABLO VALLEJO}\\ \hline
+{\bf Teléfonos:} & {\small +593-2-2366166}\\ \hline
+\end{tabular}\\
+
+<<eval=TRUE, echo=FALSE>>=
+load("Hidro.RData")
+@
+
+{\bf\small DATOS DE LOS MEDIDORES:}\\[2mm]
+\begin{tabular}{|p{111pt}|p{100pt}|p{111pt}|p{100pt}|}\hline
+{\bf\scriptsize Fecha recepción medidor:} & {\small 28/06/15} & {\bf\scriptsize Medidor en servicio (Si/No)} & {\small NO}\\ \hline
+{\bf\scriptsize Fabricante:} & {\small HIDROMETERS} & {\bf\scriptsize Modelo:} & {\small \Sexpr{modelo}}\\ \hline
+{\bf\scriptsize Número de serie:} & {\small \Sexpr{serie}} & {\bf\scriptsize Diámetro:} & {\small \Sexpr{diametro}}\\ \hline
+{\bf\scriptsize Clase:} & {\small \Sexpr{clase}} & {\bf\scriptsize Qn ($m^3/h$):} & {\small 1,5}\\ \hline
+{\bf\scriptsize MUG (litros):} & {\small 0,05} & {\bf\scriptsize Qmax ($m^3/h$):} & {\small 3}\\ \hline
+\end{tabular}\\
+
+{\bf\small RESULTADOS:}
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{100pt}|p{30pt}|p{30pt}|p{30pt}|p{30pt}|}\hline
+{\bf\scriptsize RESULTADOS} & {\bf\scriptsize Qmax} & {\bf\scriptsize Qn} & {\bf\scriptsize Qt} & {\bf\scriptsize Qmin} \\ \hline
+{\bf\scriptsize Caudal (l/h)} & \Sexpr{qmax} & \Sexpr{qn} & \Sexpr{qt} & \Sexpr{qmin} \\ \hline
+{\bf\scriptsize Error 1 (\%)} & 0,09 & 0,26 & 0,69 & 0,40 \\ \hline
+{\bf\scriptsize Error promedio (\%)} & 0,09 & 0,26 & 0,69 & 0,40 \\ \hline
+{\bf\scriptsize Incertidumbre (\%)} & 0,10 & 0,10 & 0,50 & 0,50 \\ \hline
+\end{tabular}
+\end{table}
+
+<<echo=FALSE, fig.align='center', fig.height=2.2, fig.width=4.5>>=
+print(grafico)
+@
+
+{\bf \small Comentarios:} \rule{0.87\textwidth}{.4pt}\\
+\rule{\textwidth}{.4pt}
+
+{\scriptsize
+\begin{multicols}{2}
+{\bf Elaborado por:}\newline
+Auxiliar del Banco
+
+{\bf Revisado y aprobado por:}\newline
+Jefe del Laboratorio
+\end{multicols}
+}
+
+{\scriptsize
+Notas: 
+\begin{enumerate}
+      \item Los resultados solo se refieren a los objetos presentados en el ensayo.
+      \item El presente informe no debe ser reproducido parcialmente, sin autorización del laboratorio.
+      \item Los procedimientos de ensayo utilizados estas basados en la norma ISO 4064 Segunda Edición 1999, que no corresponde  a la última versión publicada.
+      \item La incertidumbre reportada es la incertidumbre expandida de medida que se ha obtenido multiplicando  la incertidumbre típica de medición por el factor de cobertura $k=2$, que para una distribución normal, corresponde a una probabilidad de cobertura de aproximadamente $95\%$. La incertidumbre típica de medida se ha determinado conforme al documento E4/02.
+\end{enumerate}
+}
+
+\end{document}

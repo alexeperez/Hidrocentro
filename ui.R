@@ -8,6 +8,7 @@ shinyUI(fixedPage( # standard shiny layout, controls on the
   # left, output on the right
   #titlePanel("Score Sociodemográfico"), # give the interface a title
   HTML("<body style=background:##FAFAFA> </body>"),
+    #HTML("<body style=background:gray> </body>"),
   #tags$hr(),
   
 #--------------------------- fixed row 1 logos---------------------------------#
@@ -107,10 +108,10 @@ column(width=2,offset = 0,
        HTML("<p> <img src=report.png width = 90 height = 80 align=left>
            <font color=SteelBlue face=Cambria size=2> Se genera el reporte automático
             con la información proporcionada. </font> <p>"),
-       submitButton("GENERAR")
+       
+       actionButton("generar",label = "GENERAR",icon = icon("list-alt",lib="glyphicon"))
        )
 ),
-
 
 #------------------------ Datos ensayo medidor patron -------------------------#
 HTML("<b> <font color=SteelBlue face=Cambria size=3> Mediciones Medidor Patrón: </font> </b>"),

@@ -8,6 +8,7 @@ library(scales)
 library(grid)
 library(reshape2)
 library(readxl)
+library(rmarkdown)
 
 #med <- read.table("clipboard", sep="\t",dec=",",header = F)
 # funcion error de medicion
@@ -23,7 +24,7 @@ error <- function(med, mayor=TRUE){
     }
  return(er)
 }
-error(med)
+#error(med)
 
 #------------------------------------------------------
 #             Interfaz
@@ -42,7 +43,6 @@ shinyServer(function(input, output) {
         assign("qt", input$qt, envir= .GlobalEnv)
         assign("qn", input$qn, envir= .GlobalEnv)
         assign("qmax", input$qmax, envir= .GlobalEnv)
-        save.image()
         
         mpli<- c(input$mpqmini,input$mpqti,input$mpqni,input$mpqmaxi)
         mplf<- c(input$mpqminf,input$mpqtf,input$mpqnf,input$mpqmaxf)
@@ -52,6 +52,7 @@ shinyServer(function(input, output) {
         mayor <- FALSE
         if(input$vm3=="mayor") mayor <- TRUE
         er <- error(med, mayor)
+        assign("error",er,envir=.GlobalEnv)
         
         # Informacion mediciones lectura inicial y final
         mediciones <- data.frame(med,er)
@@ -88,6 +89,9 @@ shinyServer(function(input, output) {
                
            theme_bw()
     print(g)
+    
+    assign("grafico",g , envir = .GlobalEnv)
+    
             
 
 })
@@ -123,9 +127,9 @@ shinyServer(function(input, output) {
                 annotate("text", x=c(0.75,1,1.25), y=rep(0.5,3), label=desc[,2],colour="dodgerblue4",size=4)
             print(g)    
 })
-    
-    # Texto medidor aceptado o rechazado
-    output$medidor <- renderText({
+save.image(file = "Hidro.RData")    
+# Texto medidor aceptado o rechazado
+output$medidor <- renderText({
         mpli<- c(input$mpqmini,input$mpqti,input$mpqni,input$mpqmaxi)
         mplf<- c(input$mpqminf,input$mpqtf,input$mpqnf,input$mpqmaxf)
         muli<- c(input$muqmini,input$muqti,input$muqni,input$muqmaxi)
@@ -137,9 +141,21 @@ shinyServer(function(input, output) {
         medidor <- "SI"
         if(abs(er[1]>5) | any(abs(er[2:length(er)])>2)) medidor <- "NO" 
         paste(medidor)
-    })
-    
-    
-    
+        
+        # reporte
+        if(as.numeric(input$generar)>0){
+            #load("Hidro.RData")
+            system("pdflatex -interaction=batchmode reporte ")
+            #system("open -reporte.pdf")
+            #render("reporte.Rmd", pdf_document())
+            #file.show("reporte.pdf")
+        }
+})
+
+# generar <- eventReactive(input$, {
+#     input$n
+# })
+
+
 })
 
