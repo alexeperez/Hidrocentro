@@ -52,7 +52,7 @@ shinyServer(function(input, output) {
         mayor <- FALSE
         if(input$vm3=="mayor") mayor <- TRUE
         er <- error(med, mayor)
-        assign("error",er,envir=.GlobalEnv)
+        assign("error",round(er/100,2),envir=.GlobalEnv)
         
         # Informacion mediciones lectura inicial y final
         mediciones <- data.frame(med,er)
@@ -72,27 +72,28 @@ shinyServer(function(input, output) {
            annotate("segment", x=d[1:3,1] ,y=-d[1:3,2], xend=d[c(2,3,5),1],
                         yend=-d[c(2,3,5),2], colour="gray99", size=0.7)+
            annotate("rect", xmin=d[c(1,3),1],ymin=-d[c(1,3),2], xmax=d[c(2,5),1],
-                        ymax=d[c(2,5),2], fill="gray95",alpha=0.6)+
+                        ymax=d[c(2,5),2], fill="gray95",alpha=0.4)+
            
            annotate("rect", xmin=d[2:3,1],ymin=c(-d[2,2],d[3,2]), xmax=d[c(5,5),1],
-                    ymax=c(-d[5,2],d[1,2]), fill="dodgerblue4",alpha=0.9)+
-           annotate("rect", xmin=d[c(1,1),1],ymin=c(-d[1,2]-1,d[1,2]), xmax=d[c(5,5),1],
-                    ymax=c(-d[1,2],d[1,2]+1), fill="dodgerblue4",alpha=0.9)+
+                    ymax=c(-d[5,2],d[1,2]), fill="dodgerblue4",alpha=0.8)+
+           annotate("rect", xmin=d[c(1,1),1],ymin=c(-d[1,2]-2,d[1,2]), xmax=d[c(5,5),1],
+                    ymax=c(-d[1,2],d[1,2]+2), fill="dodgerblue4",alpha=0.8)+
            
            annotate("segment", x=d[1,1] ,y=0, xend=d[5,1], yend=0, colour="gray0",
-                    size=0.7, linetype="dotted")+
+                    size=0.5, linetype="dotted")+
            
            annotate("pointrange", x=d[-3,1], y=er, ymin=er, ymax=er,
-                    colour = "red", size = 1, alpha=0.7)+
+                    colour = "red", size = 0.7, alpha=1)+
            annotate("segment", x=d[-c(3,5),1], y=er[-4], xend=d[-c(1,3),1], yend=er[-1],
-                        colour = "red", size = 1, alpha=0.7)+
+                        colour = "red", size = 0.5, alpha=1)+
+           labs(list(x="Caudal (l/h)", y="Error (%)"))+ theme_bw()+
+           scale_y_continuous(breaks=seq(-100,100,2))+scale_x_continuous(breaks=d[-3,1],
+                                               labels=c("Qmin", "Qt", "Qn", "Qmax")) 
                
-           theme_bw()
     print(g)
     
     assign("grafico",g , envir = .GlobalEnv)
     
-            
 
 })
     
@@ -126,8 +127,10 @@ shinyServer(function(input, output) {
                 annotate("text", x=c(0.75,1,1.25), y=rep(0,3), label=desc[,1],colour="gray96",size=5)+
                 annotate("text", x=c(0.75,1,1.25), y=rep(0.5,3), label=desc[,2],colour="dodgerblue4",size=4)
             print(g)    
+ 
 })
-save.image(file = "Hidro.RData")    
+ 
+
 # Texto medidor aceptado o rechazado
 output$medidor <- renderText({
         mpli<- c(input$mpqmini,input$mpqti,input$mpqni,input$mpqmaxi)
@@ -140,22 +143,59 @@ output$medidor <- renderText({
         er <- error(med, mayor)
         medidor <- "SI"
         if(abs(er[1]>5) | any(abs(er[2:length(er)])>2)) medidor <- "NO" 
-        paste(medidor)
+    assign("aceptado", medidor, envir = .GlobalEnv)
+    # guardamos .RData           
+    save.image(file = "Hidro.RData") 
         
-        # reporte
-        if(as.numeric(input$generar)>0){
-            #load("Hidro.RData")
-            system("pdflatex -interaction=batchmode reporte ")
-            #system("open -reporte.pdf")
-            #render("reporte.Rmd", pdf_document())
-            #file.show("reporte.pdf")
-        }
+        paste(medidor)
+               
 })
 
-# generar <- eventReactive(input$, {
-#     input$n
+# reporte rmd
+output$reportermd <- renderText({
+    if(as.numeric(input$generar)>0){
+        load("Hidro.RData")
+        render("reporte.Rmd", pdf_document())
+        file.show("reporte.pdf")
+        }
+    paste("Ver en:", getwd())
+})
+
+# reporte rnw
+# output$reporternw <- renderText({
+#     if(as.numeric(input$generar)>0){
+#         load("Hidro.RData")
+#        system("xelatex -interaction=batchmode reporte ")
+#         system("open reporte.pdf")
+#         }
+#     paste("Ver en:", getwd())
 # })
 
+output$downloadReport <- downloadHandler(
+    filename = function() {
+        paste('reporte-', Sys.Date(), '.pdf', sep='')
+    },
+    
+    content = function(reporte) {
+        library(rmarkdown)
+        load("Hidro.RData")
+        report <- render("reporte.Rmd", pdf_document())
+        file.rename(report, reporte)
+    }
+)
+
+output$downloadReportrnw <- downloadHandler(
+    filename = function() {
+        paste('reporte-', Sys.Date(), '.pdf', sep='')
+    },
+    
+    content = function(reporte) {
+        library(knitr)
+        load("Hidro.RData")
+        report <- knit2pdf("reporte.Rnw")
+        file.rename(report, reporte)
+    }
+)
+
 
 })
-
